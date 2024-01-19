@@ -27,8 +27,8 @@ SECRET_KEY = 'django-insecure-z^!jl+q=49oczpq&-wq2$d@nwzj))5r2hktdpuxfp)1^!nhu2u
 DEBUG = False
 
 
-ALLOWED_HOSTS = ['sicadi.podium.com.br','3.20.175.67']
-CORS_ALLOWED_ORIGINS = 'http://3.20.175.67'
+ALLOWED_HOSTS = []
+CORS_ALLOWED_ORIGINS = ''
 
 
 # Application definition
@@ -87,12 +87,8 @@ WSGI_APPLICATION = 'sra.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'sra',
-        'USER': 'guilherme',
-        'PASSWORD': 'opernet123@',
-        'HOST': '172.16.200.165',
-        'PORT': '3306',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -165,6 +161,6 @@ EMAIL_BACKEND ='django.core.mail.backends.smtp.EmailBackend'
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'pd.simpleway@gmail.com'
-EMAIL_HOST_PASSWORD = 'mjtueegqaejvjplf'
+EMAIL_HOST_USER = '@gmail.com'
+EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = True
