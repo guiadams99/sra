@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+
+{% block conteudo %}
+
+<div class="container">
+    <form class="form-group" method="get" action="{% url 'dashboard' %}" id="filtros">
+        {% csrf_token %}
+        <div class="row align-items-start">
+            <div class="col-sm-1">
+                <input class="form-control ml-sm-3 mr-sm-2" name="id" placeholder="OS" type="text" value="{% if id %} {{id}} {% endif %}"/>
+            </div>
+            <div class="col-sm-3">
+                <input class="form-control ml-sm-3 mr-sm-2" name="registrado_por_nome" placeholder="Colaborador" type="text" value="{% if registrado_por_nome %} {{ registrado_por_nome }} {% endif %}"/>
+            </div>
+            <div class="col-sm-2">
+                <select class="form-control" name="cliente" id="id_cliente" onchange="atualizarCampos()">
+                    <option value="">Clientes</option>
+                    {% for cliente in clientes %}
+                    <option value="{{ cliente.id }}" {% if cliente.id == cliente_selecionado %}selected{% endif %}>{{ cliente.nome_fantasia }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-sm-2">
+                <select class="form-control" name="tipo_contrato" id="id_tipo_contrato">
+                    <option value="">Acordos</option>
+                    {% for tipo_contrato in acordos %}
+                        {% if tipo_contrato.id == tipo_contrato_selecionado %}
+                            <option value="{{ tipo_contrato.id }}" selected>{{ tipo_contrato.nome_acordo }}</option>
+                        {% else %}
+                            <option value="{{ tipo_contrato.id }}">{{ tipo_contrato.nome_acordo }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-sm-2">
+                <select class="form-control" name="atividade" id="id_atividade">
+                    <option value="">Atividades</option>
+                    {% for atividade in demandas %}
+                        {% if atividade.id == atividade_selecionada %}
+                            <option value="{{ atividade.id }}" selected>{{ atividade }}</option>
+                        {% else %}
+                            <option value="{{ atividade.id }}">{{ atividade }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>         
+            </div>
+            <br>
+            <div class="row align-items-start">
+            <div class="col-sm-4">
+                <select class="form-control" name="status" id="status-select">
+                    <option value="" {% if not request.GET.status %}selected{% endif %}>Status</option>
+                    <option value="1" {% if request.GET.status == "1" %}selected{% endif %}>Produtiva</option>
+                    <option value="4" {% if request.GET.status == "4" %}selected{% endif %}>Bonificada</option>
+                    <option value="3" {% if request.GET.status == "3" %}selected{% endif %}>Estudo</option>
+                </select>
+            </div>
+            <div class="col-sm-4">
+                <select class="form-control" name="formato" id="formato-select">
+                    <option value="" {% if not request.GET.formato %}selected{% endif %}>Formato</option>
+                    <option value="R" {% if request.GET.formato == "R" %}selected{% endif %}>Remoto</option>
+                    <option value="P" {% if request.GET.formato == "P" %}selected{% endif %}>Presencial</option>
+                </select>                           
+            </div>
+            <div class="col-sm-4">
+                <input class="form-control ml-sm-3 mr-sm-2" name="chamado" placeholder="Chamado" type="text" value="{% if chamado %} {{chamado}} {% endif %}"/>
+            </div>
+            <div class="col-sm-4">
+                <label>Início</label>
+                <input class="form-control ml-sm mr-sm-1" name="start_date" type="date" value="{% if start_date %} {{start_date}} {% endif %}"/>
+            </div>
+            <div class="col-sm-4">
+                <label>Fim</label>
+                <input class="form-control ml-sm mr-sm-1" name="end_date" type="date" value="{% if end_date %} {{end_date}} {% endif %}"/>
+            </div>
+        </div>
+        </div>
+        <hr>
+        <div class="d-flex justify-content-end">
+            <div class="col-sm-1">
+                <a href="{{ request.path }}" class="btn btn-secondary" type="reset">Limpar</a>
+            </div>
+            <div class="col-sm-1">
+                <button class="btn btn-primary my-2 my-sm-0" type="submit">Buscar</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+    <br>
+
+<div class="card shadow mb-4">
+            <div class="card-header py-3 d-sm-flex align-items-center justify-content-between mb-4">
+                <h6 class="m-0 font-weight-bold text-primary">Registros</h6>
+            </div>
+        <button class="btn btn-primary my-2 my-sm-0" id="generate-pdf"> Gerar PDF </button>
+        <br>
+        <button id="planilha" class="btn btn-success my-2 my-sm-0">Gerar Planilha</button>        
+    <div id="pdf"> 
+        <div class="col-sm-2">
+            <label>Total Horas:</label>
+            <h4 id="total-horas"></h4>
+        </div>
+    
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <th>OS</th>
+                            <th>Colaborador</th>
+                            <th>ID Cliente</th>
+                            <th>Cliente</th>
+                            <th>Acordo</th>
+                            <th>Atividade</th>
+                            <th>Data</th>
+                            <th>Total Horas</th>
+                            <th>Status</th>
+                            <th>Formato</th>
+                            <th>Chamado</th>
+                        </thead>
+                        {% if has_filters %}
+                        <tbody>
+                            {% for registro in registros %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'informacoes_atividade' id=registro.id %}">
+                                        {{ registro.id}}
+                                    </a>
+                                </td>
+                                <td>{{ registro.registrado_por}}</td>
+                                <td>{{ registro.cd_cliente}}</td>
+                                <td>{{ registro.cliente.nome_fantasia}}</td>
+                                <td>{{ registro.tipo_contrato}}</td>
+                                <td>{{ registro.atividade}}</td>
+                                <td>{{ registro.dt_agenda}}</td>
+                                <td class="horas-bruto">{{ registro.horas_bruto}}</td>
+                                <td>{{ registro.get_status_display }}</td>
+                                <td>{{ registro.get_formato_display }}</td>
+                                <td>{{ registro.chamado}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    {% endif %}
+                    </table>
+                </div>
+            </div>
+        </div>
+</div>
+<script>
+    var totalMinutos = 0;
+    var horasBruto = document.getElementsByClassName("horas-bruto");
+
+    for (var i = 0; i < horasBruto.length; i++) {
+        var tempo = horasBruto[i].textContent;
+        var horasMinutos = tempo.split(":");
+        totalMinutos += parseInt(horasMinutos[0]) * 60 + parseInt(horasMinutos[1]);
+    }
+
+    var horas = Math.floor(totalMinutos / 60);
+    var minutos = totalMinutos % 60;
+    var totalHoras = horas + ":" + (minutos < 10 ? "0" : "") + minutos;
+
+    document.getElementById("total-horas").textContent = totalHoras;
+</script>
+
+<script>
+    // Obtém o elemento total-horas e calcula o total de horas
+    var totalHorasElement = document.getElementById('total-horas');
+    var totalHoras = 0;
+    var rows = document.querySelectorAll('tbody tr');
+    for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+        var horas = parseFloat(row.querySelector('td:nth-child(9)').textContent);
+        if (!isNaN(horas)) {
+            totalHoras += horas;
+        }
+    }
+
+    // Atualiza os elementos label e h4 com o total de horas
+    var totalHorasLabelElement = document.getElementById('total-horas-label');
+    var totalHorasOutputElement = document.getElementById('total-horas-output');
+    totalHorasLabelElement.textContent = 'Total Horas: ' + totalHoras.toFixed(2);
+    totalHorasElement.textContent = totalHoras.toFixed(2);
+</script>
+
+
+
+<script>
+    var selectCliente = document.getElementById('id_cliente');
+    selectCliente.addEventListener('change', filtrarContrato);
+    
+    function filtrarContrato() {
+      var idCliente = document.getElementById('id_cliente').value;
+      var selectAtividade = document.getElementById('id_atividade');
+      selectAtividade.innerHTML = "<option value=''>Atividade</option>";
+    
+      var data = new FormData();
+      data.append('id_cliente', idCliente);
+    
+      fetch('/lista_tipo_contrato_cliente/', {
+        method: 'POST',
+        body: data,
+      }).then(function(result){
+        return result.json();
+      }).then(function(data){
+        var selectTipoContrato = document.getElementById('id_tipo_contrato');
+        selectTipoContrato.innerHTML = "<option value=''>Acordo</option>";
+        for(var i=0; i<data['dados'].length; i++){
+          selectTipoContrato.innerHTML += "<option value='" + data['dados'][i]['id_tipo_contrato'] + "'>" + data['dados'][i]['tipo_contrato'] + "</option>";
+        }
+      });
+    }
+
+    var selectTipoContrato = document.getElementById('id_tipo_contrato');
+    selectTipoContrato.addEventListener('change', filtrarAtividade);
+    
+    function filtrarAtividade() {
+      var idTipoContrato = document.getElementById('id_tipo_contrato').value;
+    
+      var data = new FormData();
+      data.append('id_tipo_contrato', idTipoContrato);
+    
+      fetch('/lista_atividade_tipo_contrato/', {
+        method: 'POST',
+        body: data,
+      }).then(function(result){
+        return result.json();
+      }).then(function(data){
+        var selectAtividade = document.getElementById('id_atividade');
+        selectAtividade.innerHTML = "<option value=''>Atividade</option>";
+        for(var i=0; i<data['dados'].length; i++){
+          selectAtividade.innerHTML += "<option value='" + data['dados'][i]['id_atividade'] + "'>" + data['dados'][i]['atividade'] + "</option>";
+        }
+      });
+    }
+</script>
+
+  
+{% endblock %}

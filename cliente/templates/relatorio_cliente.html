@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block conteudo %}
+
+<div class="col-5 m-auto">
+  <form action="">
+    {% csrf_token %}
+
+    <div class='row mt-5'>
+      <div class="col-6">
+        <label>Selecione o Cliente</label>
+        <select class="form-control" name="cliente_id" id="cliente_id">
+          <option value="">------</option>
+          {% for cliente_id in clienteFilter %}
+          <option value="{{ cliente_id }}">{{ cliente_id }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-3">
+        <div class="pesquisar">
+          <button class="col-12 btn btn-primary">Pesquisar</button>
+        </div>
+        <br>
+          <button class="col-12 btn btn-secondary">
+          <a href="{{ request.path }}"type="reset"></a>Limpar
+        </button>
+
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="graph col-10 m-auto">
+  {% autoescape off %}
+    {{ grafico | safe }}
+  {% endautoescape %}
+</div>
+
+<div class="result col-10 m-auto">
+  {% autoescape off %}
+    {{ dados }}
+  {% endautoescape %}
+</div>
+
+{% endblock %}

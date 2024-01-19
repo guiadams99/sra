@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block conteudo %}
+{% if user.is_authenticated %}
+
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">{{ user.funcionario }}</h1>
+    <a href="{% url 'cadastro' %}" class="btn btn-primary btn-icon-split btn-sm">
+            <span class="text">Registrar Atividade</span>
+
+            <span class="icon text-white-50">
+                <i class="fas fa-user-plus"></i>
+            </span>
+        </a>
+    </div>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-dismissible alert-{{ message.tags }}" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="col-md-8">
+        <form class="form-inline my-2 my-lg-0 pull-right">
+            {% csrf_token %}
+            <label>Data Inicial</label>
+            <input class="form-control ml-sm-3 mr-sm-2" name="start_date" type="date"/>
+            <label>Data Final</label>
+            <input class="form-control ml-sm-3 mr-sm-2" name="end_date" type="date"/>
+            <button class="btn btn-primary my-2 my-sm-0" type="submit">Buscar</button>
+        </form>
+      </div>
+      <br>
+    </div>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-sm-flex align-items-center justify-content-between mb-4">
+            <h6 class="m-0 font-weight-bold text-primary">Registros</h6>
+        </div>
+        <div class="col-sm-2">
+            <label>Total Horas:</label>
+            <h4 id="total-horas"></h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <th>ID</th>
+                        <th>Colaborador</th>
+                        <th>Cliente</th>
+                        <th>Acordo</th>
+                        <th>Atividade</th>
+                        <th>Data</th>
+                        <th>Total Horas</th>
+                        <th>Status</th>
+                        <th>Formato</th>
+                        <th>Chamado</th>
+                    </thead>
+
+                    <tbody>
+                        {% for registro in todos_registros %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'informacoes_atividade' id=registro.id %}">
+                                    {{ registro.id}}
+                                </a>
+                            </td>
+                            <td>{{ registro.registrado_por}}</td>
+                            <td>{{ registro.cliente}}</td>
+                            <td>{{ registro.tipo_contrato}}</td>
+                            <td>{{ registro.atividade}}</td>
+                            <td>{{ registro.dt_agenda}}</td>
+                            <td class="horas-bruto">{{ registro.horas_bruto}}</td>
+                            <td>{{ registro.get_status_display }}</td>
+                            <td>{{ registro.get_formato_display }}</td>
+                            <td>{{ registro.chamado}}</td>
+                            
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var totalMinutos = 0;
+    var horasBruto = document.getElementsByClassName("horas-bruto");
+
+    for (var i = 0; i < horasBruto.length; i++) {
+        var tempo = horasBruto[i].textContent;
+        var horasMinutos = tempo.split(":");
+        totalMinutos += parseInt(horasMinutos[0]) * 60 + parseInt(horasMinutos[1]);
+    }
+
+    var horas = Math.floor(totalMinutos / 60);
+    var minutos = totalMinutos % 60;
+    var totalHoras = horas + ":" + (minutos < 10 ? "0" : "") + minutos;
+
+    document.getElementById("total-horas").textContent = totalHoras;
+</script>
+<script>
+    // Obtém o elemento total-horas e calcula o total de horas
+    var totalHorasElement = document.getElementById('total-horas');
+    var totalHoras = 0;
+    var rows = document.querySelectorAll('tbody tr');
+    for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+        var horas = parseFloat(row.querySelector('td:nth-child(9)').textContent);
+        if (!isNaN(horas)) {
+            totalHoras += horas;
+        }
+    }
+
+    // Atualiza os elementos label e h4 com o total de horas
+    var totalHorasLabelElement = document.getElementById('total-horas-label');
+    var totalHorasOutputElement = document.getElementById('total-horas-output');
+    totalHorasLabelElement.textContent = 'Total Horas: ' + totalHoras.toFixed(2);
+    totalHorasElement.textContent = totalHoras.toFixed(2);
+</script>
+
+{% endif %}            
+{% endblock conteudo %}

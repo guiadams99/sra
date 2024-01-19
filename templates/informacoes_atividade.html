@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% load widget_tweaks %}
+
+{% block conteudo %}
+<div class="container-fluid">
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <h1 class="h4 mb-0 text-gray-900">{{ nome_pagina }}</h1>
+    </div>
+  </div>
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <div class="card shadow">
+        <div class="card-body">
+          <h4 class="mb-3 text-primary">
+            Informações gerais
+          </h4>
+          <form>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label>Colaborador</label>
+                <input type="text" class="form-control" value="{{ registro.registrado_por }}" disabled>
+              </div>
+              <div class="form-group col-md-4">
+                <label>Cliente</label>
+                <input type="text" class="form-control" value="{{ registro.cliente }}" disabled>
+              </div>
+              <div class="form-group col-md-4">
+                <label>Total Horas</label>
+                <input type="text" class="form-control" value="{{ registro.horas_bruto }}" disabled>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label>Tipo de Acordo</label>
+                <input type="text" class="form-control" value="{{ registro.tipo_contrato }}" disabled>
+              </div>
+              <div class="form-group col-md-4">
+                <label>Atividade</label>
+                <input type="text" class="form-control" value="{{ registro.atividade }}" disabled>
+              </div>
+              <div class="form-group col-md-4">
+                <label>Data</label>
+                <input type="text" class="form-control" value="{{ registro.dt_agenda }}" disabled>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label>Status</label>
+                <input type="text" class="form-control" value="{{ registro.get_status_display }}" disabled>
+              </div>
+              <div class="form-group col-md-4">
+                <label>Formato</label>
+                <input type="text" class="form-control" value="{{ registro.get_formato_display }}" disabled>
+              </div>
+              <div class="form-group col-md-4">
+                <label>Nº Chamado GLPI</label>
+                <input type="text" class="form-control" value="{{ registro.chamado }}" disabled>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Descrição</label>
+              <textarea class="form-control" rows="3" disabled>{{ registro.descricao }}</textarea>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <div class="card shadow">
+        <div class="card-body">
+          <h4 class="mb-3 text-primary">
+            Complementares
+        </h4>
+        <form>
+            <div class="form-row">
+                <div class="form-group col-md-0">
+                    <label>Início do Primeiro Horário</label>
+                    <input type="text" class="form-control" value="{{ registro.hr_inicio_01 }}" disabled>
+                </div>
+                <div class="form-group col-md-0">
+                    <label>Fim do Primeiro Horário</label>
+                    <input type="text" class="form-control" value="{{ registro.hr_fim_01 }}" disabled>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-0">
+                    <label>Início do Segundo Horário</label>
+                    <input type="text" class="form-control" value="{{ registro.hr_inicio_02 }}" disabled>
+                </div>
+                <div class="form-group col-md-0">
+                    <label>Fim do Segundo Horário</label>
+                    <input type="text" class="form-control" value="{{ registro.hr_fim_02 }}" disabled>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-0">
+                  <label>Início do Terceiro Horário</label>
+                  <input type="text" class="form-control" value="{{ registro.hr_inicio_03 }}" disabled>
+                </div>
+  
+                <div class="form-group col-md-0">
+                  <label>Fim do Terceiro Horário</label>
+                  <input type="text" class="form-control" value="{{ registro.hr_fim_03 }}" disabled>
+                </div>
+              </div>
+  
+              <div class="form-row">
+                <div class="form-group col-md-0">
+                  <label>Início do Quarto Horário</label>
+                  <input type="text" class="form-control" value="{{ registro.hr_inicio_04 }}" disabled>
+                </div>
+  
+                <div class="form-group col-md-0">
+                  <label>Fim do Quarto Horário</label>
+                  <input type="text" class="form-control" value="{{ registro.hr_fim_04 }}" disabled>
+                </div>
+              </div>
+  
+              <div class="form-row">
+                <div class="form-group col-md-3">
+                  <label>Alimentação</label>
+                  <input type="text" class="form-control" value="{{ registro.alimentacao }}" disabled>
+                </div>
+  
+                <div class="form-group col-md-3">
+                  <label>Hospedagem</label>
+                  <input type="text" class="form-control" value="{{ registro.hospedagem }}" disabled>
+                </div>
+  
+                <div class="form-group col-md-3">
+                  <label>Pedágio</label>
+                  <input type="text" class="form-control" value="{{ registro.pedagio }}" disabled>
+                </div>
+  
+                <div class="form-group col-md-3">
+                  <label>KM</label>
+                  <input type="text" class="form-control" value="{{ registro.total_km }}" disabled>
+                </div>
+              </div>
+  
+              <div class="form-group col-md-12">
+                <label>Observações KM</label>
+                <textarea class="form-control" rows="3" disabled>{{ registro.obs_km }}</textarea>
+              </div>
+  
+              <div class="form-group col-md-12">
+                <label>Outros</label>
+                <textarea class="form-control" rows="3" disabled>{{ registro.outros }}</textarea>
+              </div>
+  
+              <div class="form-group col-md-12">
+                <label>Observações</label>
+                <textarea class="form-control" rows="3" disabled>{{ registro.obs }}</textarea>
+            </div>
+        </form>     
+</div>
+<div class="container mt-4">
+    <div class="row mb-6 justify-content-end">
+        <div class="col-md-0">
+            <a href="{% url 'index'%}" class="btn btn-secondary text-white" type="button">
+                <span class="text">Voltar</span>
+            </a>
+        </div>
+    </div>
+</div>
+<footer class="sticky-footer bg-white">
+    <div class="container my-auto">
+        <div class="copyright text-center my-auto">
+            <span>{{registro.updated_registro}}</span>
+        </div>
+    </div>
+</footer>
+
+{% endblock %}
+  

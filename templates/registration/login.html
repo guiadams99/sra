@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% load widget_tweaks %}
+
+{% block conteudo %}
+
+<div class="container">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h1 class="text-center">Bem-vindo!</h1>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    <form method="post" class="form">
+                        {% csrf_token %}
+                        {% if form.errors %}
+                            <div class="alert alert-danger" role="alert">
+                                <strong>Erro!</strong> Nome de usuário ou senha incorreta.
+                            </div>
+                        {% endif %}
+                        <div class="form-group">
+                            <label for="{{ form.username.id_for_label }}">Username:</label>
+                            {% render_field form.username class+="form-control" %}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.password.id_for_label }}">Password:</label>
+                            {% render_field form.password class+="form-control" %}
+                        </div>
+                        <div class="form-group text-center">
+                            <button type="submit" class="btn btn-primary btn-lg">Login</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

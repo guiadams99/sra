@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+
+{% load static %}
+
+<html lang="pt-br">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <title> SICADI </title>
+        
+        <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+        
+        <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">    
+        <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    </head>
+
+    <body id="page-top">
+        <div id="wrapper">
+            <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
+                    <div class="sidebar-brand-icon rotate-n-15" style="margin-right: 10px;">
+                      <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="sidebar-brand-text">SICADI</div>
+                  </a>
+                  
+                
+                <hr class="sidebar-divider my-0">
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'index'%}">
+                        <i class="fas fa-user"></i>
+                        <span>Início</span>
+                    </a>
+                </li>
+                {% endif %}
+                {% if request.user.groups.all.0.name == 'admin' or request.user.groups.all.0.name == 'dash' %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'dashboard'%}">
+                        <i class="fas fa-users"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                {% endif %}
+                {% if request.user.groups.all.0.name == 'admin' %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'admin:index' %}">
+                        <i class="fas fa-bars"></i>
+                        <span>Administração</span>
+                    </a>
+                </li>
+                {% endif %}
+                {% if request.user.groups.all.0.name == 'admin' %}
+                {% endif %}
+                <hr class="sidebar-divider">
+            </ul>
+
+            <div id="content-wrapper" class="d-flex flex-column">
+                <div id="content">
+                    <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                        <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        {% if user.is_authenticated %}
+                        <ul class="navbar-nav ml-auto">
+                            <li class="nav-item dropdown no-arrow">
+                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="mr-2 d-none d-lg-inline text-gray-800 small">
+                                        {{user.funcionario}}
+                                    </span>
+                                </a>
+                        
+                                <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                                    <a class="dropdown-item" href="{% url 'change_password' %}" data-toggle="#" data-target="#">
+                                        <i class="fas fa-registered"></i>
+                                        Alterar senha
+                                    </a>
+                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                        Sair
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                        {% endif %}
+                    </nav>
+                    {% block conteudo %} {% endblock conteudo %}
+
+
+                    <footer class="sticky-footer bg-white">
+                        <div class="container my-auto">
+                            <div class="copyright text-center my-auto">
+                                <span>Podium Tecnologia</span>
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            </div>
+            {% if user.is_authenticated %}
+            <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="ModalLabel">Você realmente deseja sair?</h5>
+                            
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        
+                        <div class="modal-body">Selecione "sair" se realmente deseja sair</div>
+                        
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+                            <a class="btn btn-primary" href="{% url 'logout' %}">Sair</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+        <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+        <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/shim.min.js" integrity="sha512-nPnkC29R0sikt0ieZaAkk28Ib7Y1Dz7IqePgELH30NnSi1DzG4x+envJAOHz8ZSAveLXAHTR3ai2E9DZUsT8pQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="{% static 'js/pdf.js' %}" defer></script>
+        <script src="{% static 'js/planilha.js' %}"></script>
+        <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+        <script type="text/javascript">
+
+            window.AppcuesSettings = {
+          
+              enableURLDetection: true
+          
+            };
+          
+        </script>
+          
+        <script src="//fast.appcues.com/109707.js"></script>
+
+
+{% block static %}
+{% endblock %}
+    </body>
+</html>

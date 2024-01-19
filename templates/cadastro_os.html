@@ -1,0 +1,372 @@
+{% extends "base.html" %}
+ 
+{% block conteudo %}
+<div class="form-group text-center">
+  <h3>Sistema de Cadastro Diário<h3>
+</div>
+<br>
+<br>
+
+{% if messages %}
+  {% for message in messages %}
+    {% if message.tags == 'error' %}
+      <div class="alert alert-danger">{{ message }}</div>
+    {% elif message.tags == 'warning' %}
+      <div class="alert alert-warning">{{ message }}</div>
+    {% elif message.tags == 'info' %}
+      <div class="alert alert-info">{{ message }}</div>
+    {% else %}
+      <div class="alert alert-secondary">{{ message }}</div>
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+<div class="container">
+    <form class="form-group" method="POST" action="{% url 'cadastro' %}">
+        {% csrf_token %}
+        <div class="row align-items-start">
+          <div class="col-md-4">
+            <label for="cliente" class="text-center">Cliente</label>
+            <select class="form-control" name="cliente" id="id_cliente">
+              <option value="">----</option>
+              {% for cliente in clientes %}
+              <option value="{{ cliente.id }}">{{ cliente.nome_fantasia }}</option>
+              {% endfor %}
+            </select>
+          </div>       
+          <div class="col-md-4">
+            <label for="tipo_contrato"class="text-center">Acordo</label>
+            <select class="form-control" name="tipo_contrato" id="id_tipo_contrato">
+              <option value="">----</option>
+              {% for tipo_contrato in acordos %}
+              <option value="{{ tipo_contrato.id }}">{{ tipo_contrato.nome_acordo }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label for="atividade"class="text-center">Atividade</label>
+            <select class="form-control" name="atividade" id="id_atividade">
+              <option value="">----</option>
+              {% for atividade in demandas %}
+              <option value="{{ atividade.id }}">{{ atividade }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>     
+        <br>                         
+            <div class="form-group">
+              <label for="obs">Descrição</label>
+              <textarea class="form-control" name="descricao" id="descricao"></textarea>
+            </div>                        
+                    <div class="form-group">
+                      <div class="row">
+                        <div class="col-md-3">
+                          <div class="form-group text-left">
+                            <label for="status" class="col-form-label col-form-label-sm">Status</label>
+                            <select class="form-control" name="status" id="status-select">
+                              <option value="">----</option>
+                              <option value="1" {% if request.GET.status == "1" %}selected{% endif %}>Produtiva</option>
+                              <option value="4" {% if request.GET.status == "4" %}selected{% endif %}>Bonificada</option>
+                              <option value="3" {% if request.GET.status == "3" %}selected{% endif %}>Estudo</option>
+                            </select>
+                          </div>  
+                        </div>
+                        <div class="col-md-3">
+                          <div class="form-group text-left">
+                            <label for="formato" class="col-form-label col-form-label-sm">Formato</label>
+                            <select class="form-control" name="formato" id="formato-select">
+                              <option value="">----</option>
+                              <option value="R" {% if request.GET.formato == "R" %}selected{% endif %}>Remoto</option>
+                              <option value="P" {% if request.GET.formato == "P" %}selected{% endif %}>Presencial</option>
+                            </select>
+                          </div>  
+                        </div>
+                        <div class="col-md-3">
+                          <div class="form-group">
+                            <label for="chamado" class="col-form-label col-form-label-sm">Chamado</label>
+                            <input type="number" class="form-control" name="chamado" placeholder="GLPI" id="chamado">
+                          </div>
+                        </div>
+                        <div class="col-md-3">
+                          <div class="form-group">
+                            <label for="dt_agenda" class="col-form-label col-form-label-sm">Data</label>
+                            <input type="date" name="dt_agenda" id="dt_agenda" placeholder="Data" class="form-control">
+                          </div> 
+                        </div>
+                      </div>
+                    </div>                                 
+                    <div class="row justify-content-between">
+                      <div class="col-md-2">
+                        <div class="form-group text-center">
+                          <label for="hr_inicio_01" class="text-center">Início do Primeiro</label>
+                          <input class="form-control clockpicker text-center" type="time" name="hr_inicio_01" id="hr_inicio_01">
+                        </div>
+                        <div class="form-group text-center">
+                          <label for="hr_fim_01" class="text-center">Fim do Primeiro</label>
+                          <input class="form-control clockpicker text-center" type="time" name="hr_fim_01" id="hr_fim_01">
+                        </div>                        
+                      </div>
+                      <div class="col-md-2">
+                        <div class="form-group text-center">
+                          <label for="hr_inicio_02"class="text-center">Início do Segundo</label>
+                          <input class="form-control clockpicker text-center" type="time" name="hr_inicio_02" id="hr_inicio_02">
+                        </div>
+                        <div class="form-group text-center">
+                          <label for="hr_fim_02"class="text-center">Fim do Segundo</label>
+                          <input class="form-control clockpicker text-center" type="time" name="hr_fim_02" id="hr_fim_02">
+                        </div>
+                      </div>
+                      <div class="col-md-2">
+                        <div class="form-group text-center">
+                          <label for="hr_inicio_03"class="text-center">Início do Terceiro</label>
+                          <input class="form-control clockpicker text-center" type="time" name="hr_inicio_03" id="hr_inicio_03">
+                        </div>
+                        <div class="form-group text-center">
+                          <label for="hr_fim_03"class="text-center">Fim do Terceiro</label>
+                          <input class="form-control clockpicker text-center" type="time" name="hr_fim_03" id="hr_fim_03">
+                        </div>
+                      </div>
+                      <div class="col-md-2">
+                        <div class="form-group text-center">
+                          <label for="hr_inicio_04"class="text-center">Início do Quarto</label>
+                          <input class="form-control clockpicker text-center" type="time" name="hr_inicio_04" id="hr_inicio_04">
+                        </div>
+                        <div class="form-group text-center">
+                          <label for="hr_fim_04"class="text-center">Fim do Quarto</label>
+                          <input class="form-control clockpicker text-center" type="time" name="hr_fim_04" id="hr_fim_04">
+                        </div>
+                      </div>
+                    </div>
+                    <br>
+                    <hr>
+                    <div class="presencial" style="display: none;">
+                      <br>                  
+                    <div class="row justify-content-between">
+                      <div class="col-md-2">
+                        <div class="form-group text-center">
+                          <label for="alimentacao">Alimentação</label>
+                          <input type="number" class="form-control" name="alimentacao" id="alimentacao">
+                        </div>
+                      </div>
+                      <div class="col-md-2">
+                        <div class="form-group text-center">
+                          <label for="hospedagem">Hospedagem</label>
+                          <input type="number" class="form-control" name="hospedagem" id="hospedagem">
+                        </div>
+                      </div>
+                      <div class="col-md-2">
+                        <div class="form-group text-center">
+                          <label for="pedagio">Pedágio</label>
+                          <input type="number" class="form-control" name="pedagio" id="pedagio">
+                        </div>
+                      </div>
+                      <div class="col-md-2">
+                        <div class="form-group text-center">
+                          <label for="outros">Outros</label>
+                          <input type="number" class="form-control" name="outros" id="outros">
+                        </div>
+                      </div>
+                      <div class="col-md-2">
+                        <div class="form-group text-center">
+                          <label for="total_km">Total de km</label>
+                          <input type="number" class="form-control" name="total_km" id="total_km">
+                        </div>
+                      </div>
+                    </div>
+                      <div class="form-group">
+                        <label for="obs_km">Observações do km</label>
+                        <textarea class="form-control" name="obs_km" id="obs_km"></textarea>
+                      </div>
+                      <div class="form-group">
+                        <label for="obs">Observações</label>
+                        <textarea class="form-control" name="obs" id="obs"></textarea>
+                      </div>                      
+                    </div> 
+                      <div class="d-flex justify-content-end">
+                        <div class="col-sm-1">
+                            <button class="btn btn-primary my-4 my-sm-8" type="submit">Enviar</button>
+                        </div>
+      
+    </form>
+    </div> 
+    <script>
+// Seleciona todos os inputs de hora
+const inputsHora = document.querySelectorAll('input[type="time"]');
+
+// Desabilita todos os campos, exceto o primeiro
+for (let i = 1; i < inputsHora.length; i++) {
+  inputsHora[i].disabled = true;
+}
+
+// Adiciona um listener de input ao primeiro input de hora
+inputsHora[0].addEventListener('input', () => {
+  // Verifica se o primeiro horário foi preenchido
+  if (inputsHora[0].value !== '') {
+    // Habilita o fim do primeiro horário
+    inputsHora[1].disabled = false;
+  } else {
+    // Desabilita todos os campos, exceto o primeiro
+    for (let i = 1; i < inputsHora.length; i++) {
+      inputsHora[i].value = '';
+      inputsHora[i].disabled = true;
+    }
+  }
+});
+
+// Adiciona um listener de input ao fim do primeiro horário
+inputsHora[1].addEventListener('input', () => {
+  // Verifica se o fim do primeiro horário foi preenchido
+  if (inputsHora[1].value !== '') {
+    // Habilita o início do segundo horário
+    inputsHora[2].disabled = false;
+  } else {
+    // Desabilita todos os campos a partir do fim do primeiro horário
+    for (let i = 2; i < inputsHora.length; i++) {
+      inputsHora[i].value = '';
+      inputsHora[i].disabled = true;
+    }
+  }
+});
+
+// Adiciona um listener de input aos demais campos de hora
+for (let i = 2; i < inputsHora.length; i++) {
+  inputsHora[i].addEventListener('input', () => {
+    // Verifica se o horário anterior foi preenchido
+    if (inputsHora[i - 1].value !== '') {
+      // Habilita o próximo horário
+      inputsHora[i + 1].disabled = false;
+    } else {
+      // Desabilita todos os campos a partir do horário atual
+      for (let j = i; j < inputsHora.length; j++) {
+        inputsHora[j].value = '';
+        inputsHora[j].disabled = true;
+      }
+    }
+  });
+}
+    </script>
+        
+        <script>
+          document.addEventListener("DOMContentLoaded", function() {
+            // seleciona o elemento select com id "formato-select"
+            const select = document.querySelector("#formato-select");
+            
+            // seleciona a div com a classe "presencial"
+            const divPresencial = document.querySelector(".presencial");
+            
+            // esconde a div presencial se a opção "Remoto" for selecionada
+            select.addEventListener("change", function() {
+              if (this.value === "R") {
+                divPresencial.style.display = "none";
+              } else {
+                divPresencial.style.display = "block";
+              }
+            });
+          });
+          
+        </script>
+          <script>
+            // Seleciona o select com id "formato-select"
+const formatoSelect = document.querySelector("#formato-select");
+
+// Seleciona a div com classe "presencial"
+const presencialDiv = document.querySelector(".presencial");
+
+// Adiciona um event listener ao select
+formatoSelect.addEventListener("change", function() {
+  // Se a opção selecionada for "Presencial"
+  if (this.value === "P") {
+    // Mostra a div com classe "presencial"
+    presencialDiv.style.display = "block";
+  } else {
+    // Oculta a div com classe "presencial"
+    presencialDiv.style.display = "none";
+  }
+});
+
+          </script>  
+        
+            <script>
+
+              select_cliente = document.getElementById('id_cliente');
+          
+              select_cliente.addEventListener('change', filtrar_contrato);
+          
+          
+              function filtrar_contrato(){
+          
+                  id_cliente = document.getElementById('id_cliente').value;
+                  select_atividade = document.getElementById('id_atividade');
+                  select_atividade.innerHTML = "<option>-------</option>"
+          
+          
+                  data = new FormData();
+                  data.append('id_cliente', id_cliente);
+          
+                  fetch('/lista_tipo_contrato_cliente/', {
+                      method: 'POST',
+                      body: data,
+          
+                  }).then(function(result){
+                      return result.json();
+                  }).then(function(data){
+                      select_tipo_contrato = document.getElementById('id_tipo_contrato');
+                      select_tipo_contrato.innerHTML = "<option>-------</option>"
+                      for(i=0; i<data['dados'].length; i++){
+                          select_tipo_contrato.innerHTML += "<option value='" + data['dados'][i]['id_tipo_contrato'] + "'>" + data['dados'][i]['tipo_contrato'] + "</option>"
+          
+                      }
+                     
+          
+                  })
+              }
+          
+          </script>
+          
+          
+          <script>
+          
+              select_tipo_contrato = document.getElementById('id_tipo_contrato');
+          
+              select_tipo_contrato.addEventListener('change', filtrar_atividade);
+          
+          
+              function filtrar_atividade(){
+                  console.log('teste')
+                  id_tipo_contrato = document.getElementById('id_tipo_contrato').value;
+          
+          
+                  data = new FormData();
+                  data.append('id_tipo_contrato', id_tipo_contrato);
+          
+                  fetch('/lista_atividade_tipo_contrato/', {
+                      method: 'POST',
+                      body: data,
+                      
+                  }).then(function(result){
+                      return result.json();
+                  }).then(function(data){
+                      select_atividade = document.getElementById('id_atividade');
+                      select_atividade.innerHTML = "<option>-------</option>"
+          
+                      for(i=0; i<data['dados'].length; i++){
+          
+                          select_atividade.innerHTML += "<option value='" + data['dados'][i]['id_atividade'] + "'>" + data['dados'][i]['atividade'] + "</option>"
+          
+                      }
+                     
+          
+                  })
+              }
+          
+          </script>       
+
+          
+
+{% endblock %}
+
+
+
+
+
+

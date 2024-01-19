@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% load widget_tweaks %}
+
+{% block conteudo %}
+
+<div class ="container">
+    <br>
+
+    {% if messages %}
+        {% for i in messages %}
+            <div class="alert {{i.tags}}" role="alert">
+              {{i}} 
+              </div>
+        {% endfor %}
+    {% endif %}
+
+        <div class="col-md">
+            <h1> Bem vindo! </h1>
+
+        </div>
+
+        <div style= "text-align: center;" class="col-md-2">
+            
+            <hr>
+            <form method="post">{% csrf_token %}
+                {{ form.as_p }}
+                <br>
+                <input class="btn btn-success btn-lg" type="submit">
+            </form>
+        </div>
+
+        <div class="col-md-3">
+        </div>
+</div>
+
+
+{% endblock %}
+
