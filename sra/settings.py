@@ -27,8 +27,8 @@ SECRET_KEY = 'django-insecure-z^!jl+q=49oczpq&-wq2$d@nwzj))5r2hktdpuxfp)1^!nhu2u
 DEBUG = False
 
 
-ALLOWED_HOSTS = ['sicadi.podium.com.br','172.16.200.165']
-CORS_ALLOWED_ORIGINS = 'http://172.16.200.165'
+ALLOWED_HOSTS = ['sicadi.podium.com.br','3.20.175.67']
+CORS_ALLOWED_ORIGINS = 'http://3.20.175.67'
 
 
 # Application definition
